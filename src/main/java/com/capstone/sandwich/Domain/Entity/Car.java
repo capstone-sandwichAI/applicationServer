@@ -13,22 +13,22 @@ import javax.persistence.Id;
 @Entity
 public class Car {
 
-    @Id @Generated
-    private Integer id;
+        @Id @Generated
+        private Integer id;
 
-    private String carNumber;
-    private String videoUrl;
+        private String carNumber;
+        private String videoUrl;
 
-    /*TODO
-    불량 유형 체크
-     */
+        /*TODO
+        불량 유형 체크
+         */
 
-    private Integer scratch=0; //스크래치 개수
-    private Integer installation=0; // 장착 불량 개수
-    private Integer exterior=0; //외관 손상 개수
-    private Integer gap=0; // 단차 손상 개수
+        private Integer scratch=0; //스크래치 개수
+        private Integer installation=0; // 장착 불량 개수
+        private Integer exterior=0; //외관 손상 개수
+        private Integer gap=0; // 단차 손상 개수
 
-    private Integer totalDefects=0;
+        private Integer totalDefects=0;
 
 
 }
