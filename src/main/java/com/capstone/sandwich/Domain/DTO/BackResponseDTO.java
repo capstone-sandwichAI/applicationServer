@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @NoArgsConstructor
-public class backResponseDTO {
+public class BackResponseDTO {
 
     private String carNumber;
     private MultipartFile resultVideo;
