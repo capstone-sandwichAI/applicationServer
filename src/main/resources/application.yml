@@ -1,0 +1,22 @@
+spring:
+  output:
+    ansi:
+      enabled: always
+---
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://43.202.16.62:3306/sandwichdb?serverTimezone=UTC&characterEncoding=UTF-8
+    username: user1
+    password: aaaa
+
+  jpa:
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL5Dialect
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+
+    hibernate:
+      ddl-auto: update
