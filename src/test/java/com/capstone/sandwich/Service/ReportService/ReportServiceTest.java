@@ -25,9 +25,10 @@ class ReportServiceTest {
     private ReportService reportService;
     private String request;
 
-    @Test
+    @BeforeEach
     void makeRequest() throws JsonProcessingException {
         request=reportService.makeRequest(new Car());
+
 
     }
 
@@ -36,7 +37,7 @@ class ReportServiceTest {
     void getResponse() {
         Car car = new Car();
 
-        request = "what is chatgpt?";
+//        request = "what is chatgpt?";
         String response = reportService.getResponse(request, 1.0f, 500);
 
     }

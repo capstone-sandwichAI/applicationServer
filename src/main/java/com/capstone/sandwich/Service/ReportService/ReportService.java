@@ -21,16 +21,22 @@ public class ReportService {
 
     @Value("${apikey}")
     private String API_KEY;
-    private static final String ENDPOINT = "https://api.openai.com/v1/completions";
+    private static final String ENDPOINT = "https://api.openai.com/v1/chat/completions";
     ObjectMapper objectMapper = new ObjectMapper();
 
     public String makeRequest(Car car) throws JsonProcessingException {
-        String request="";
-        request += car.getClass().toString();
-        String carJson = objectMapper.writeValueAsString(car);
+        String request= objectMapper.writeValueAsString(car);
 
-        log.info("request = {}", carJson);
-        return carJson;
+//        request= carJson.replace("scratch", "스크래치")
+//                .replace("installation", "장착 불량")
+//                .replace("exterior", "외관 손상")
+//                .replace("gap", "단차")
+//                .replace("totalDefects","전체 불량 개수");
+
+//        request += " 다음은 외관 불량 테스트 결과이다. 이를 바탕으로 레포트를 작성해줘라";
+        request += "This is our Car Inspection result. Make a report by this result.";
+        log.info("request = {}", request);
+        return request;
     }
 
     public String getResponse(String prompt, float temperature, int maxTokens) {
@@ -58,8 +64,13 @@ public class ReportService {
     }
     private static Map<String, Object> makeRequestBody(String prompt, float temperature, int maxTokens) {
         Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("model","text-davinci-003");
-        requestBody.put("prompt", prompt);
+        requestBody.put("model","gpt-3.5-turbo");
+
+        Map<String, Object> message = new HashMap<>();
+        message.put("role", "user");
+        message.put("content", prompt);
+        requestBody.put("messages", new Object[]{message});;
+
         requestBody.put("temperature", temperature);
         requestBody.put("max_tokens", maxTokens);
         return requestBody;
