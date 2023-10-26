@@ -3,6 +3,8 @@ package com.capstone.sandwich.Domain.Entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.List;
 
 @Builder
 @Getter
@@ -17,7 +19,6 @@ public class Car {
     private Integer id;
 
     private String carNumber;
-    private String videoUrl;
 
     /*TODO
     불량 유형 체크
@@ -28,6 +29,11 @@ public class Car {
     private Integer exterior; //외관 손상 개수
     private Integer gap; // 단차 손상 개수
     private Integer totalDefects;
+
+    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
+    private List<CarImages> carImages;
+
+    private LocalDate createdDate;
 
 
 }
