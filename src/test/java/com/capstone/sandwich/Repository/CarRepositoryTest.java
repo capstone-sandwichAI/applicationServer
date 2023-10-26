@@ -9,6 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,12 +45,12 @@ public class CarRepositoryTest {
         //give
         Car car = Car.builder()
                 .carNumber("abc123")
-                .videoUrl("example.com/video/url")
                 .gap(0)
                 .scratch(2)
                 .exterior(1)
                 .installation(0)
                 .totalDefects(3)
+                .createdDate(LocalDate.now())
                 .build();
         carRepository.save(car);
 
@@ -58,7 +60,8 @@ public class CarRepositoryTest {
         //then
         Car savedCar = carList.get(0);
         assertThat(savedCar.getCarNumber()).isEqualTo("abc123");
-        assertThat(savedCar.getVideoUrl()).isEqualTo("example.com/video/url");
+        assertThat(savedCar.getScratch()).isEqualTo(car.getScratch());
+        assertThat(savedCar.getCreatedDate()).isEqualTo(car.getCreatedDate());
     }
 
 }
