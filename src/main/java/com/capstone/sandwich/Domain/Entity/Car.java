@@ -27,7 +27,6 @@ public class Car {
     private Integer installation; // 장착 불량 개수
     private Integer exterior; //외관 손상 개수
     private Integer gap; // 단차 손상 개수
-
     private Integer totalDefects;
 
 
