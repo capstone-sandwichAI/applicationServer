@@ -28,17 +28,6 @@ public class CarRepositoryTest {
         carRepository.deleteAll();
     }
 
-//    @Test
-//    public void 데이터가_없을_때_반환_테스트(){
-//        //give
-//        List<Car> carList = carRepository.findAll();
-//
-//        //when
-//
-//        //then
-//        assertTrue(carList.isEmpty());
-//    }
-
     @Test
     @Transactional
     public void 데이터_삽입_조회(){
