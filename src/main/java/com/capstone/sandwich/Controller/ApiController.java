@@ -1,8 +1,10 @@
 package com.capstone.sandwich.Controller;
 
 import com.capstone.sandwich.Domain.DTO.RequestDTO;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,8 +30,11 @@ public class ApiController {
         //insert DB
 
         //make Report
-
-
-
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> testApi(){
+        return ResponseEntity.status(HttpStatus.OK).body("connection between fe and be is successful");
+    }
+
 }
