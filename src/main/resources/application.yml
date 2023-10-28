@@ -7,8 +7,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://43.202.16.62:3306/sandwichdb?serverTimezone=UTC&characterEncoding=UTF-8
-    username: user1
-    password: aaaa
+    username: root
+    password: 1234
 
   jpa:
     show-sql: true
