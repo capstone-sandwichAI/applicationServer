@@ -33,7 +33,7 @@ public class CarRepositoryTest {
     public void 데이터_삽입_조회(){
         //give
         Car car = Car.builder()
-                .carNumber("abc123")
+                .carNumber("a1b2c3")
                 .gap(0)
                 .scratch(2)
                 .exterior(1)
@@ -48,7 +48,7 @@ public class CarRepositoryTest {
 
         //then
         Car savedCar = carList.get(0);
-        assertThat(savedCar.getCarNumber()).isEqualTo("abc123");
+        assertThat(savedCar.getCarNumber()).isEqualTo("a1b2c3");
         assertThat(savedCar.getScratch()).isEqualTo(car.getScratch());
         assertThat(savedCar.getCreatedDate()).isEqualTo(car.getCreatedDate());
     }
