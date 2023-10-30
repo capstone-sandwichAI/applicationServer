@@ -18,14 +18,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CarService {
 
-//    private final CarRepository carRepository;
-//    private final CarImagesRepository carImagesRepository;
+    private final CarRepository carRepository;
+    private final CarImagesRepository carImagesRepository;
 
     public Integer validateDTO(RequestDTO dto) throws ApiException {
         log.info("Validation start");
         List<MultipartFile> photos = dto.getPhotos();
         log.info("photo size ={}",photos.size());
-        if(photos.get(0).isEmpty())
+        if(photos.isEmpty()||photos.get(0).isEmpty())
             throw new ApiException(HttpStatus.NOT_FOUND,ApiException.NullException());
         List<MultipartFile> unsupportedFiles = photos.stream().filter(
                 file -> (!file.getContentType().equals("image/png")) //jpeg도 포함 0
