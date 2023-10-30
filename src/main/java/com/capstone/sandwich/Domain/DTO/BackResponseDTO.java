@@ -5,13 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class BackResponseDTO {
 
     private String carNumber;
-    private MultipartFile resultVideo;
+    private List<MultipartFile> photos;
 
     private Integer scratch; //스크래치 개수
     private Integer installation; // 장착 불량 개수
