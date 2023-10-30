@@ -13,7 +13,7 @@ import java.util.List;
 public class BackResponseDTO {
 
     private String carNumber;
-    private List<MultipartFile> photos;
+    private List<String> photoUrl;
 
     private Integer scratch; //스크래치 개수
     private Integer installation; // 장착 불량 개수
