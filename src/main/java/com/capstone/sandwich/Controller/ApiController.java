@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -18,7 +20,6 @@ public class ApiController {
     private final CarService carService;
 
     @PostMapping("/inspection/{carNumber}")
-
     public void frontRequest(@ModelAttribute RequestDTO requestDTO, @PathVariable("carNumber") String carNumber) throws ApiException {
         requestDTO.setCarNumber(carNumber);
         log.info("request car = {}, image cnt = {}", requestDTO.getCarNumber(), requestDTO.getPhotos().size());
@@ -29,10 +30,11 @@ public class ApiController {
         //response from Ai - output AiResponseDTO
         AiResponseDTO aiResponseDTO = carService.requestToAi(requestDTO);
 
-        //insert Storage - input AiResponseDTO.getPhotos()
-        carService.insertStorage(aiResponseDTO.getPhotos());
+        //insert Storage - input AiResponseDTO.getPhotos() output url List
+        List<String> urls = carService.insertStorage(aiResponseDTO.getPhotos());
 
-        //insert DB - input AiResponseDTO -> Car output url List
+        //insert DB - input AiResponseDTO
+        carService.insertDB(aiResponseDTO, urls);
 
         //make Report - input Car output string
 
