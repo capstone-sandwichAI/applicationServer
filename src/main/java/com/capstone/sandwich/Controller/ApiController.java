@@ -1,5 +1,6 @@
 package com.capstone.sandwich.Controller;
 
+import com.capstone.sandwich.Domain.DTO.AiResponseDTO;
 import com.capstone.sandwich.Domain.DTO.RequestDTO;
 import com.capstone.sandwich.Domain.Exception.ApiException;
 import com.capstone.sandwich.Service.CarService;
@@ -24,13 +25,16 @@ public class ApiController {
 
         //validation
         carService.validateDTO(requestDTO);
-        //request to Ai
+        //request to Ai - input requestDTO
+        //response from Ai - output AiResponseDTO
+        AiResponseDTO aiResponseDTO = carService.requestToAi(requestDTO);
 
-        //response from Ai
+        //insert Storage - input AiResponseDTO.getPhotos()
+        carService.insertStorage(aiResponseDTO.getPhotos());
 
-        //insert DB
+        //insert DB - input AiResponseDTO -> Car output url List
 
-        //make Report
+        //make Report - input Car output string
 
 
     }
