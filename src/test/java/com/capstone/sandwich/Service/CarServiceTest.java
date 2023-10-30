@@ -1,5 +1,6 @@
 package com.capstone.sandwich.Service;
 
+import com.capstone.sandwich.Domain.DTO.AiResponseDTO;
 import com.capstone.sandwich.Domain.DTO.RequestDTO;
 import com.capstone.sandwich.Domain.Exception.ApiException;
 import com.capstone.sandwich.Repository.CarImagesRepository;
@@ -39,15 +40,17 @@ class CarServiceTest {
 
     @Test
     void ValidationSuccess() throws IOException, ApiException {
-
         File file1 = new File("src/test/resources/testPhotos/roofSide.png");
         MultipartFile multipartFile1 = new MockMultipartFile(file1.getName(), file1.getName(), "image/png", Files.readAllBytes(file1.toPath()));
         List<MultipartFile> files = new ArrayList<>();
         files.add(multipartFile1);
+
         RequestDTO dto = new RequestDTO("A", files);
         Integer size = carService.validateDTO(dto);
         assertThat(size).isEqualTo(0);
     }
+
+
     @Test
     void ValidationNull(){
         List<MultipartFile> files = new ArrayList<>();
@@ -67,7 +70,29 @@ class CarServiceTest {
         files.add(multipartFile2);
         RequestDTO dto = new RequestDTO("A", files);
         assertThrows(ApiException.class, () -> carService.validateDTO(dto));
-        
+    }
+
+    @Test
+    void saveToDB() throws IOException {
+        File file1 = new File("src/test/resources/testPhotos/roofSide.png");
+        File file2 = new File("src/test/resources/testPhotos/radiatorGrill.png");
+        MultipartFile multipartFile1 = new MockMultipartFile(file1.getName(), file1.getName(), "image/png", Files.readAllBytes(file1.toPath()));
+        MultipartFile multipartFile2 = new MockMultipartFile(file1.getName(), file2.getName(), "image/jpeg", Files.readAllBytes(file2.toPath()));
+        List<MultipartFile> files = new ArrayList<>();
+        files.add(multipartFile1);
+        files.add(multipartFile2);
+
+        String testCarNumber = "a";
+
+        AiResponseDTO aiResponseDTO = new AiResponseDTO(testCarNumber,files,0,0,0,0,0);
+        List<String> urls= new ArrayList<String>();
+        urls.add("www.url1.storage");
+        urls.add("www.url2.storage");
+        carService.insertDB(aiResponseDTO,urls);
+
+
+        assertThat(carService.getCar(testCarNumber).getCarNumber()).isEqualTo(testCarNumber);
+
     }
 
 }
