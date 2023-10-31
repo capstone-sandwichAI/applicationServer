@@ -61,9 +61,9 @@ class CarServiceTest {
     @Test
     void ValidationUnsupportedMedia() throws ApiException, IOException {
         File file1 = new File("src/test/resources/testPhotos/roofSide.png");
-        File file2 = new File("src/test/resources/testPhotos/bumper.jpg");
+        File file2 = new File("src/test/resources/testPhotos/unsupportedMediaType.txt");
         MultipartFile multipartFile1 = new MockMultipartFile(file1.getName(), file1.getName(), "image/png", Files.readAllBytes(file1.toPath()));
-        MultipartFile multipartFile2 = new MockMultipartFile(file1.getName(), file2.getName(), "image/jpeg", Files.readAllBytes(file2.toPath()));
+        MultipartFile multipartFile2 = new MockMultipartFile(file1.getName(), file2.getName(), "text/plain", Files.readAllBytes(file2.toPath()));
 
         List<MultipartFile> files = new ArrayList<>();
         files.add(multipartFile1);
