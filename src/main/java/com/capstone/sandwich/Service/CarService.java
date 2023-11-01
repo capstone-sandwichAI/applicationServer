@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -74,6 +75,7 @@ public class CarService {
                 .gap(aiResponseDTO.getGap())
                 .scratch(aiResponseDTO.getScratch())
                 .totalDefects(aiResponseDTO.getTotalDefects())
+                .createdDate(LocalDate.now())
                 .carImages(images)
                 .build();
         //저장
