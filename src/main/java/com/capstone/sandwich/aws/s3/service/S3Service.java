@@ -64,4 +64,14 @@ public class S3Service {
     private String getObjectKeyFromUrl(String imageUrl) {
         return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
     }
+
+    public boolean doesObjectExist(String objectKey) {
+        try {
+            ObjectMetadata metadata = amazonS3Client.getObjectMetadata(bucket, objectKey);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
 }
