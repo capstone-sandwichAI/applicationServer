@@ -2,6 +2,7 @@ package com.capstone.sandwich.Controller;
 
 import com.capstone.sandwich.Domain.DTO.AiResponseDTO;
 import com.capstone.sandwich.Domain.DTO.RequestDTO;
+import com.capstone.sandwich.Domain.DTO.TestDTO;
 import com.capstone.sandwich.Domain.Exception.ApiException;
 import com.capstone.sandwich.Service.CarService;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +40,10 @@ public class ApiController {
         //make Report - input Car output string
 
 
+    }
+
+    @PostMapping("/file")
+    public String estimateSpeed(@ModelAttribute TestDTO dto) {
+        return "Success";
     }
 }

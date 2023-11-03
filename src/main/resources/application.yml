@@ -5,10 +5,14 @@ spring:
 ---
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://43.202.16.62:3306/sandwichdb?serverTimezone=UTC&characterEncoding=UTF-8
-    username: user1
-    password: aaaa
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:tcp://localhost/~/test;MODE=MySql;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 30MB
 
   jpa:
     show-sql: true
