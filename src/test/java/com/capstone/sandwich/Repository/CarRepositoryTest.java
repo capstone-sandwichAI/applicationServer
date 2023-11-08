@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.InstanceOfAssertFactories.LOCAL_DATE_TIME;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
@@ -62,6 +63,36 @@ public class CarRepositoryTest {
         assertThat(savedCar.getCarNumber()).isEqualTo("abc123");
         assertThat(savedCar.getScratch()).isEqualTo(car.getScratch());
         assertThat(savedCar.getCreatedDate()).isEqualTo(car.getCreatedDate());
+    }
+    @Test
+    @Transactional
+    void 월별_조회() {
+        Car car1 = Car.builder()
+                .carNumber("c1")
+                .gap(0)
+                .scratch(2)
+                .exterior(1)
+                .installation(0)
+                .totalDefects(3)
+                .createdDate(LocalDate.now())
+                .build();
+        Car car2 = Car.builder()
+                .carNumber("c2")
+                .gap(0)
+                .scratch(2)
+                .exterior(1)
+                .installation(0)
+                .totalDefects(3)
+                .createdDate(LocalDate.now())
+                .build();
+        carRepository.save(car1);
+        carRepository.save(car2);
+
+        List<Car> findCars = carRepository.findByThisMonth(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
+        assertThat(findCars.size()).isEqualTo(2);
+        List<Car> findCarsFail = carRepository.findByThisMonth(LocalDate.now().getYear()-1, LocalDate.now().getMonthValue());
+        assertThat(findCarsFail.size()).isEqualTo(0);
+
     }
 
 }
