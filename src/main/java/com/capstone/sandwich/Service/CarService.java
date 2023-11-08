@@ -31,9 +31,9 @@ public class CarService {
         log.info("Validation start");
         List<MultipartFile> photos = dto.getPhotos();
 
-        //dto에 안 보내진 것이 있는 경우
-        if(dto.getCarNumber().isEmpty()||photos.isEmpty()||photos.get(0).isEmpty())
-            throw new ApiException(HttpStatus.NOT_FOUND,ApiException.NullException());
+        //dto에 field마다 null이 아닌지와 사진은 8장인지
+        if(dto.getCarNumber().isEmpty()||photos.size()!=8)
+            throw new ApiException(HttpStatus.NOT_ACCEPTABLE,ApiException.NotAllowed());
 
         //미디어 타입 검사
         List<MultipartFile> unsupportedFiles = photos.stream().filter(
