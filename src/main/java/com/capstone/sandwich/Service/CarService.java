@@ -82,6 +82,10 @@ public class CarService {
         carRepository.save(car);
     }
 
+    public List<Car> findCarThisMonth(int year, int month) {
+        return carRepository.findByThisMonth(year, month);
+    }
+
     //main 로직에서 추가
     public Car getCar(String carNumber) {
 
