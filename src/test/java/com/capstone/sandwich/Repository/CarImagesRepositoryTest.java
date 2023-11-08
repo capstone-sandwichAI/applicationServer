@@ -3,6 +3,7 @@ package com.capstone.sandwich.Repository;
 import com.capstone.sandwich.Domain.Entity.Car;
 import com.capstone.sandwich.Domain.Entity.CarImages;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,8 +25,14 @@ public class CarImagesRepositoryTest {
     @Autowired
     private CarRepository carRepository;
 
+    @BeforeEach
+    public void cleanUpBeforeEach(){
+        carRepository.deleteAll();
+        carImagesRepository.deleteAll();
+    }
+
     @AfterEach
-    public void cleanUp(){
+    public void cleanUpAfterEach(){
         carRepository.deleteAll();
         carImagesRepository.deleteAll();
     }

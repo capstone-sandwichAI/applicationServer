@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 import java.util.Optional;
 
+
+
 public interface CarRepository extends JpaRepository<Car,Integer> {
     Optional<Car> findByCarNumber(String carNumber);
 
