@@ -2,6 +2,7 @@ package com.capstone.sandwich.Service;
 
 import com.capstone.sandwich.Domain.DTO.AiResponseDTO;
 import com.capstone.sandwich.Domain.DTO.RequestDTO;
+import com.capstone.sandwich.Domain.Entity.Car;
 import com.capstone.sandwich.Domain.Exception.ApiException;
 import com.capstone.sandwich.Repository.CarImagesRepository;
 import com.capstone.sandwich.Repository.CarRepository;
@@ -23,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,6 +39,10 @@ class CarServiceTest {
 
     @Autowired
     private CarService carService;
+
+    @Autowired
+    private CarRepository carRepository;
+
 
     @Test
     void ValidationSuccess() throws IOException, ApiException {
@@ -93,6 +99,31 @@ class CarServiceTest {
 
         assertThat(carService.getCar(testCarNumber).getCarNumber()).isEqualTo(testCarNumber);
 
+    }
+    @Test
+    void findCarThisMonth(){
+        Car car1 = makeCar("c1");
+        Car car2 = makeCar("c2");
+
+        carRepository.save(car1);
+        carRepository.save(car2);
+
+        List<Car> cars = carService.findCarThisMonth(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
+        Assertions.assertThat(cars.size()).isEqualTo(2);
+
+    }
+
+    private static Car makeCar(String carNumber) {
+        Car car = Car.builder()
+                .carNumber(carNumber)
+                .gap(0)
+                .scratch(2)
+                .exterior(1)
+                .installation(0)
+                .totalDefects(3)
+                .createdDate(LocalDate.now())
+                .build();
+        return car;
     }
 
 }
