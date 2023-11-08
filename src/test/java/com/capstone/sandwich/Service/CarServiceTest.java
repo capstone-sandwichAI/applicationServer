@@ -45,15 +45,27 @@ class CarServiceTest {
 
 
     @Test
-    void ValidationSuccess() throws IOException, ApiException {
+    void ValidationNotAllowed() throws IOException, ApiException {
         File file1 = new File("src/test/resources/testPhotos/roofSide.png");
         MultipartFile multipartFile1 = new MockMultipartFile(file1.getName(), file1.getName(), "image/png", Files.readAllBytes(file1.toPath()));
         List<MultipartFile> files = new ArrayList<>();
         files.add(multipartFile1);
 
         RequestDTO dto = new RequestDTO("A", files);
-        Integer size = carService.validateDTO(dto);
-        assertThat(size).isEqualTo(0);
+
+        assertThrows(ApiException.class, () -> carService.validateDTO(dto));
+    }
+    @Test
+    void ValidationSuccess() throws IOException, ApiException {
+        File file1 = new File("src/test/resources/testPhotos/roofSide.png");
+        List<MultipartFile> files = new ArrayList<>();
+        for(int i=0;i<8;i++) {
+            MultipartFile multipartFile1 = new MockMultipartFile(file1.getName(), file1.getName(), "image/png", Files.readAllBytes(file1.toPath()));
+            files.add(multipartFile1);
+        }
+        RequestDTO dto = new RequestDTO("A", files);
+
+        assertThat(carService.validateDTO(dto)).isEqualTo(0);
     }
 
 

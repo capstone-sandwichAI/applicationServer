@@ -11,7 +11,7 @@ public class ApiException extends Exception{
     private HttpStatus code;
     private String message;
 
-    public static String NullException() {return "No Files";}
+    public static String NotAllowed() {return "No CarNumber or There are not 8 photos";}
 
     public static String MediaTypeException(String fileName) {
         return fileName + " unsupported media type";
