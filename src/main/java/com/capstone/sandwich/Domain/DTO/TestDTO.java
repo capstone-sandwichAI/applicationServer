@@ -1,19 +1,13 @@
 package com.capstone.sandwich.Domain.DTO;
 
-
-import lombok.*;
+import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Builder
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class RequestDTO {
-
-    private String carNumber;
+public class TestDTO {
     private List<MultipartFile> photos;
+    private MultipartFile video;
 
 }
