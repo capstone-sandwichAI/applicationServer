@@ -30,7 +30,7 @@ public class Car {
     private Integer gap; // 단차 손상 개수
     private Integer totalDefects;
 
-    @OneToMany(mappedBy = "car", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "car", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CarImages> carImages;
 
     private LocalDate createdDate;

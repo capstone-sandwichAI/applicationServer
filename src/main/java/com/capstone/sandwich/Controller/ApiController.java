@@ -1,6 +1,7 @@
 package com.capstone.sandwich.Controller;
 
 import com.capstone.sandwich.Domain.DTO.AiResponseDTO;
+import com.capstone.sandwich.Domain.DTO.BackResponseDTO;
 import com.capstone.sandwich.Domain.DTO.RequestDTO;
 import com.capstone.sandwich.Domain.DTO.TestDTO;
 import com.capstone.sandwich.Domain.Exception.ApiException;
@@ -61,7 +62,9 @@ public class ApiController {
 
         try{
             Car car = carService.getCar(carNumber);
-            return ResponseEntity.status(HttpStatus.OK).body(car);
+            BackResponseDTO backResponseDTO = carService.convertToDto(car, car.getId());
+
+            return ResponseEntity.status(HttpStatus.OK).body(backResponseDTO);
         } catch(EntityNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
