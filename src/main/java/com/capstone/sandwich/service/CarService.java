@@ -1,6 +1,7 @@
 package com.capstone.sandwich.Service;
 
 import com.capstone.sandwich.Domain.DTO.AiResponseDTO;
+import com.capstone.sandwich.Domain.DTO.BackResponseDTO;
 import com.capstone.sandwich.Domain.DTO.RequestDTO;
 import com.capstone.sandwich.Domain.Entity.Car;
 import com.capstone.sandwich.Domain.Entity.CarImages;
@@ -16,7 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -91,5 +94,38 @@ public class CarService {
 
         return carRepository.findByCarNumber(carNumber)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 차량 번호입니다."));
+    }
+
+    public List<String> getCarImagesUrl(Integer id) {
+        Optional<Car> carOptional = carRepository.findById(id);
+
+        if (carOptional.isEmpty()) {
+            throw new EntityNotFoundException("Id값에 대한 차량이 존재하지 않습니다.");
+        }
+
+        Car car = carOptional.get();
+        List<CarImages> carImagesList = car.getCarImages();
+
+        if (carImagesList.isEmpty()) {
+            throw new EntityNotFoundException("차량 이미지가 존재하지 않습니다.");
+        }
+
+        return carImagesList.stream()
+                .map(CarImages::getImageUrl)
+                .collect(Collectors.toList());
+    }
+
+    public BackResponseDTO convertToDto(Car car, Integer id) {
+        List<String> imageUrlList = getCarImagesUrl(id);
+
+        return BackResponseDTO.builder()
+                .carNumber(car.getCarNumber())
+                .exterior(car.getExterior())
+                .scratch(car.getScratch())
+                .installation(car.getInstallation())
+                .gap(car.getGap())
+                .totalDefects(car.getTotalDefects())
+                .imageUrlList(imageUrlList)
+                .build();
     }
 }
