@@ -1,9 +1,6 @@
 package com.capstone.sandwich.Controller;
 
-import com.capstone.sandwich.Domain.DTO.AiResponseDTO;
-import com.capstone.sandwich.Domain.DTO.BackResponseDTO;
-import com.capstone.sandwich.Domain.DTO.RequestDTO;
-import com.capstone.sandwich.Domain.DTO.TestDTO;
+import com.capstone.sandwich.Domain.DTO.*;
 import com.capstone.sandwich.Domain.Exception.ApiException;
 import com.capstone.sandwich.Service.CarService;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import com.capstone.sandwich.Domain.Entity.Car;
 
@@ -32,7 +31,9 @@ public class ApiController {
 
         //validation
         carService.validateDTO(requestDTO);
+
         //request to Ai - input requestDTO
+
         //response from Ai - output AiResponseDTO
         AiResponseDTO aiResponseDTO = carService.requestToAi(requestDTO);
 
@@ -62,12 +63,27 @@ public class ApiController {
 
         try{
             Car car = carService.getCar(carNumber);
-            BackResponseDTO backResponseDTO = carService.convertToDto(car, car.getId());
+            BackResponseDTO backResponseDTO = carService.convertToBackResponseDto(car, car.getId());
 
             return ResponseEntity.status(HttpStatus.OK).body(backResponseDTO);
         } catch(EntityNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/report/{date}")
+    public ResponseEntity<?> readReportFromDate(@PathVariable("date") String date){
+        //date: ex) 2023-11-11
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse(date, formatter);
+
+        List<ReportDto> reportList = carService.getReportDtoFromDate(localDate);
+
+        if(reportList.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 날짜에 진행된 검수가 없습니다.");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(reportList);
     }
 
 }

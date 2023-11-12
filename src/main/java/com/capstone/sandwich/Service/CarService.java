@@ -2,6 +2,7 @@ package com.capstone.sandwich.Service;
 
 import com.capstone.sandwich.Domain.DTO.AiResponseDTO;
 import com.capstone.sandwich.Domain.DTO.BackResponseDTO;
+import com.capstone.sandwich.Domain.DTO.ReportDto;
 import com.capstone.sandwich.Domain.DTO.RequestDTO;
 import com.capstone.sandwich.Domain.Entity.Car;
 import com.capstone.sandwich.Domain.Entity.CarImages;
@@ -114,7 +115,7 @@ public class CarService {
                 .collect(Collectors.toList());
     }
 
-    public BackResponseDTO convertToDto(Car car, Integer id) {
+    public BackResponseDTO convertToBackResponseDto(Car car, Integer id) {
         List<String> imageUrlList = getCarImagesUrl(id);
 
         return BackResponseDTO.builder()
@@ -125,6 +126,30 @@ public class CarService {
                 .gap(car.getGap())
                 .totalDefects(car.getTotalDefects())
                 .imageUrlList(imageUrlList)
+                .build();
+    }
+
+
+
+    public List<ReportDto> getReportDtoFromDate(LocalDate date) {
+        List<Car> carList = carRepository.findByCreatedDate(date);
+
+        List<ReportDto> reportDtoList = carList.stream()
+                .map(this::ConvertToReportDto)
+                .collect(Collectors.toList());
+
+        return reportDtoList;
+    }
+
+    private ReportDto ConvertToReportDto(Car car) {
+        return ReportDto.builder()
+                .carNumber(car.getCarNumber())
+                .scratch(car.getScratch())
+                .gap(car.getGap())
+                .exterior(car.getExterior())
+                .installation(car.getInstallation())
+                .totalDefects(car.getTotalDefects())
+                .createdDate(car.getCreatedDate())
                 .build();
     }
 }
