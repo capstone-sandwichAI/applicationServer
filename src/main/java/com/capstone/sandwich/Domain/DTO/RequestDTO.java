@@ -14,6 +14,6 @@ import java.util.List;
 public class RequestDTO {
 
     private String carNumber;
-    private List<MultipartFile> photos;
+    private List<MultipartFile> imageList;
 
 }

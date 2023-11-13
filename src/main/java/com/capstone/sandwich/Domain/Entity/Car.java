@@ -35,5 +35,7 @@ public class Car {
 
     private LocalDate createdDate;
 
-
+    public void setCarImages(List<CarImages> carImages) {
+        this.carImages = carImages;
+    }
 }
