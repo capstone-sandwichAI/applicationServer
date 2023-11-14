@@ -36,9 +36,9 @@ public class CarService {
         String carNumber = dto.getCarNumber();
 
         //사진 개수 검사
-        if (imageList.size() == 0) {
-            throw new ApiException(HttpStatus.NOT_ACCEPTABLE, ApiException.NotAllowed());
-        }
+//        if (imageList.size() == 0) {
+//            throw new ApiException(HttpStatus.NOT_ACCEPTABLE, ApiException.NotAllowed());
+//        }
 
         //차량 번호 중복 검사
         if (isDuplicate(carNumber)) {

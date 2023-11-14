@@ -31,13 +31,10 @@ public class ApiController {
     private final CarService carService;
     private final S3Service s3Service;
 
-    @PostMapping("/inspection/{carNumber}")
-    public ResponseEntity<?> inspection(@RequestParam("file") List<MultipartFile> images, @PathVariable("carNumber") String carNumber) throws ApiException, IOException {
-        RequestDTO requestDTO = RequestDTO.builder()
-                .carNumber(carNumber)
-                .imageList(images)
-                .build();
+    @PostMapping("/inspection")
+    public ResponseEntity<?> inspection(@ModelAttribute RequestDTO requestDTO) throws ApiException, IOException {
         log.info("request car = {}, image cnt = {}", requestDTO.getCarNumber(), requestDTO.getImageList().size());
+
 
         //validation
         carService.validateDTO(requestDTO);
