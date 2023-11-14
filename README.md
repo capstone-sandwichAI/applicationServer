@@ -1,4 +1,4 @@
-## "SANDWICH AI" Project [23.09 ~ 23.12]
+## "sandwich AI" Project [23.09 ~ 23.12]
 
 ### 플랫폼 링크
 
