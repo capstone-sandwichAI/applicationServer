@@ -10,6 +10,7 @@
 - 세종대학교 2023-2학기 capstone 프로젝트 참여
 
 ### 기술 스택
+<img width="811" alt="스크린샷 2023-11-14 오후 11 25 41" src="https://github.com/capstone-sandwichAI/applicationServer/assets/96655921/00baa1a8-e293-47de-a1ce-c7996680dda3">
 
 - `Spring Boot`, `Spring Data JPA`, `MySQL`, `AWS`, `Docker`
 
