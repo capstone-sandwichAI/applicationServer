@@ -14,5 +14,9 @@
 - `Spring Boot`, `Spring Data JPA`, `MySQL`, `AWS`, `Docker`
 
 ### 이렇게 프로젝트를 진행했어요
+- 
 
 ### 이렇게 개발했어요
+- 
+
+### Screen shots
