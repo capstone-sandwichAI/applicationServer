@@ -1,8 +1,13 @@
 ## "sandwich AI" Project [23.09 ~ 23.12]
 
-### 플랫폼 링크
+### link
 
-### 설명
+[sandwich AI]()
+
+### summary
+
+- as
+- 
 
 ### 기술 스택
 
