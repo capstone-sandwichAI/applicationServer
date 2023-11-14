@@ -2,6 +2,7 @@ package com.capstone.sandwich.Service;
 
 import com.capstone.sandwich.Domain.DTO.AiResponseDTO;
 import com.capstone.sandwich.Domain.DTO.BackResponseDTO;
+import com.capstone.sandwich.Domain.DTO.ReportDto;
 import com.capstone.sandwich.Domain.DTO.RequestDTO;
 import com.capstone.sandwich.Domain.Entity.Car;
 import com.capstone.sandwich.Domain.Entity.CarImages;
@@ -31,14 +32,21 @@ public class CarService {
 
     public Integer validateDTO(RequestDTO dto) throws ApiException {
         log.info("Validation start");
-        List<MultipartFile> photos = dto.getPhotos();
+        List<MultipartFile> imageList = dto.getImageList();
+        String carNumber = dto.getCarNumber();
 
-        //dto에 field마다 null이 아닌지와 사진은 8장인지
-        if(dto.getCarNumber().isEmpty()||photos.size()!=8)
-            throw new ApiException(HttpStatus.NOT_ACCEPTABLE,ApiException.NotAllowed());
+        //사진 개수 검사
+//        if (imageList.size() == 0) {
+//            throw new ApiException(HttpStatus.NOT_ACCEPTABLE, ApiException.NotAllowed());
+//        }
+
+        //차량 번호 중복 검사
+        if (isDuplicate(carNumber)) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, ApiException.duplicateCarNumberException());
+        }
 
         //미디어 타입 검사
-        List<MultipartFile> unsupportedFiles = photos.stream().filter(
+        List<MultipartFile> unsupportedFiles = imageList.stream().filter(
                 file -> (!file.getContentType().equals("image/png")&&!file.getContentType().equals("image/jpeg"))
         ).collect(Collectors.toList());
 
@@ -54,21 +62,18 @@ public class CarService {
         log.info("request to Ai");
         //TODO HTTPRequest to Ai
 
-        return new AiResponseDTO();
+        return AiResponseDTO.builder()
+                .carNumber(requestDTO.getCarNumber())
+                .imageList(requestDTO.getImageList())
+                .exterior(0)
+                .gap(0)
+                .installation(0)
+                .scratch(0)
+                .totalDefects(0)
+                .build();
     }
 
-    public List<String> insertStorage(List<MultipartFile> photos) {
-        ArrayList<String> urls = new ArrayList<>();
-        //TODO 스토리지 저장 및 url 추출
-        return urls;
-    }
-    public void insertDB(AiResponseDTO aiResponseDTO,List<String> urls) {
-
-        //url list 기반으로 CarImages 객체 리스트
-        List<CarImages> images = urls.stream().map((url) -> {
-            return CarImages.builder().imageUrl(url).build();
-        }).collect(Collectors.toList());
-
+    public void insertDB(AiResponseDTO aiResponseDTO, List<String> imageUrlList) {
         //car Entity 생성
         Car car = Car.builder()
                 .carNumber(aiResponseDTO.getCarNumber())
@@ -78,10 +83,21 @@ public class CarService {
                 .scratch(aiResponseDTO.getScratch())
                 .totalDefects(aiResponseDTO.getTotalDefects())
                 .createdDate(LocalDate.now())
-                .carImages(images)
                 .build();
+
+        //url list 기반으로 CarImages 객체 리스트
+        List<CarImages> images = imageUrlList.stream().map((url) -> {
+            return CarImages.builder()
+                    .car(car)
+                    .imageUrl(url)
+                    .build();
+        }).collect(Collectors.toList());
+
+        car.setCarImages(images);
+
         //저장
         carRepository.save(car);
+        carImagesRepository.saveAll(images);
     }
 
     public List<Car> findCarThisMonth(int year, int month) {
@@ -114,7 +130,7 @@ public class CarService {
                 .collect(Collectors.toList());
     }
 
-    public BackResponseDTO convertToDto(Car car, Integer id) {
+    public BackResponseDTO convertToBackResponseDto(Car car, Integer id) {
         List<String> imageUrlList = getCarImagesUrl(id);
 
         return BackResponseDTO.builder()
@@ -126,5 +142,36 @@ public class CarService {
                 .totalDefects(car.getTotalDefects())
                 .imageUrlList(imageUrlList)
                 .build();
+    }
+
+
+
+    public List<ReportDto> getReportDtoFromDate(LocalDate date) {
+        List<Car> carList = carRepository.findByCreatedDate(date);
+
+        List<ReportDto> reportDtoList = carList.stream()
+                .map(this::ConvertToReportDto)
+                .collect(Collectors.toList());
+
+        return reportDtoList;
+    }
+
+    private ReportDto ConvertToReportDto(Car car) {
+        return ReportDto.builder()
+                .carNumber(car.getCarNumber())
+                .scratch(car.getScratch())
+                .gap(car.getGap())
+                .exterior(car.getExterior())
+                .installation(car.getInstallation())
+                .totalDefects(car.getTotalDefects())
+                .createdDate(car.getCreatedDate())
+                .build();
+    }
+
+    public boolean isDuplicate(String carNumber) {
+        if (carRepository.findByCarNumber(carNumber).isEmpty()) {
+            return false;
+        }
+        return true;
     }
 }

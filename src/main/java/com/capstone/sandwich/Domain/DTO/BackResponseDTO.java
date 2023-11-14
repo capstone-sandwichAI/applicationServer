@@ -20,7 +20,4 @@ public class BackResponseDTO {
     private Integer exterior; //외관 손상 개수
     private Integer gap; // 단차 손상 개수
     private Integer totalDefects;
-
-    //자동 레포트
-    private String report;
 }

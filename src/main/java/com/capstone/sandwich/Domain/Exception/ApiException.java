@@ -16,4 +16,8 @@ public class ApiException extends Exception{
     public static String MediaTypeException(String fileName) {
         return fileName + " unsupported media type";
     }
+
+    public static String duplicateCarNumberException() {
+        return "Car number is duplicated";
+    }
 }

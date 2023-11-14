@@ -1,20 +1,25 @@
 package com.capstone.sandwich.Controller;
 
-import com.capstone.sandwich.Domain.DTO.AiResponseDTO;
-import com.capstone.sandwich.Domain.DTO.BackResponseDTO;
-import com.capstone.sandwich.Domain.DTO.RequestDTO;
-import com.capstone.sandwich.Domain.DTO.TestDTO;
+import com.capstone.sandwich.Domain.DTO.*;
+import com.capstone.sandwich.Domain.Entity.CarImages;
 import com.capstone.sandwich.Domain.Exception.ApiException;
 import com.capstone.sandwich.Service.CarService;
+import com.capstone.sandwich.aws.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import com.capstone.sandwich.Domain.Entity.Car;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.persistence.EntityNotFoundException;
 
 @RestController
@@ -24,27 +29,33 @@ import javax.persistence.EntityNotFoundException;
 public class ApiController {
 
     private final CarService carService;
+    private final S3Service s3Service;
 
-    @PostMapping("/inspection/{carNumber}")
-    public void frontRequest(@ModelAttribute RequestDTO requestDTO, @PathVariable("carNumber") String carNumber) throws ApiException {
-        requestDTO.setCarNumber(carNumber);
-        log.info("request car = {}, image cnt = {}", requestDTO.getCarNumber(), requestDTO.getPhotos().size());
+    @PostMapping("/inspection")
+    public ResponseEntity<?> inspection(@ModelAttribute RequestDTO requestDTO) throws ApiException, IOException {
+        log.info("request car = {}, image cnt = {}", requestDTO.getCarNumber(), requestDTO.getImageList().size());
+
 
         //validation
         carService.validateDTO(requestDTO);
+
         //request to Ai - input requestDTO
+
         //response from Ai - output AiResponseDTO
         AiResponseDTO aiResponseDTO = carService.requestToAi(requestDTO);
 
         //insert Storage - input AiResponseDTO.getPhotos() output url List
-        List<String> urls = carService.insertStorage(aiResponseDTO.getPhotos());
+        List<MultipartFile> imageList = requestDTO.getImageList();
+        List<String> imageUrlList = new ArrayList<>();
+        for (MultipartFile image : imageList) {
+            String imageUrl = s3Service.upload(image);
+            imageUrlList.add(imageUrl);
+        }
 
         //insert DB - input AiResponseDTO
-        carService.insertDB(aiResponseDTO, urls);
+        carService.insertDB(aiResponseDTO, imageUrlList);
 
-        //make Report - input Car output string
-
-
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/file")
@@ -57,17 +68,32 @@ public class ApiController {
         return ResponseEntity.status(HttpStatus.OK).body("connection between fe and be is successful");
     }
 
-    @GetMapping("/dummy-data/{carNumber}")
+    @GetMapping("/inspection/result/{carNumber}")
     public ResponseEntity<?> dummyDataApi(@PathVariable("carNumber") String carNumber) {
 
         try{
             Car car = carService.getCar(carNumber);
-            BackResponseDTO backResponseDTO = carService.convertToDto(car, car.getId());
+            BackResponseDTO backResponseDTO = carService.convertToBackResponseDto(car, car.getId());
 
             return ResponseEntity.status(HttpStatus.OK).body(backResponseDTO);
         } catch(EntityNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/report/{date}")
+    public ResponseEntity<?> readReportFromDate(@PathVariable("date") String date){
+        //date: ex) 2023-11-11
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse(date, formatter);
+
+        List<ReportDto> reportList = carService.getReportDtoFromDate(localDate);
+
+        if(reportList.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("해당 날짜에 진행된 검수가 없습니다.");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(reportList);
     }
 
 }
