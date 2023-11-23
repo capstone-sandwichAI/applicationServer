@@ -32,7 +32,7 @@ public class ApiController {
     private final S3Service s3Service;
 
     @PostMapping("/inspection")
-    public ResponseEntity<?> inspection(@ModelAttribute RequestDTO requestDTO) throws ApiException, IOException {
+    public ResponseEntity<?> requestInspection(@ModelAttribute RequestDTO requestDTO) throws ApiException, IOException {
         log.info("request car = {}, image cnt = {}", requestDTO.getCarNumber(), requestDTO.getImageList().size());
 
 
@@ -69,7 +69,7 @@ public class ApiController {
     }
 
     @GetMapping("/inspection/result/{carNumber}")
-    public ResponseEntity<?> dummyDataApi(@PathVariable("carNumber") String carNumber) {
+    public ResponseEntity<?> readCarInfo(@PathVariable("carNumber") String carNumber) {
 
         try{
             Car car = carService.getCar(carNumber);
