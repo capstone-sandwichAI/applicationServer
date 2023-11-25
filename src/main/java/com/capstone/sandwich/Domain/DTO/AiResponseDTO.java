@@ -36,6 +36,10 @@ public class AiResponseDTO {
         this.totalDefects = totalDefects;
     }
 
+    public void setTotalDefects() {
+        this.totalDefects = scratch + installation + exterior + gap;
+    }
+
     public void setImageList(){//TODO 이미지 이름 정하는거 어케할지
 
         List<String> base64Images = encodedImages;
