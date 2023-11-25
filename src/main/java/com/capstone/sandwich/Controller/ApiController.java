@@ -1,12 +1,13 @@
 package com.capstone.sandwich.Controller;
 
 import com.capstone.sandwich.Domain.DTO.*;
-import com.capstone.sandwich.Domain.Entity.CarImages;
 import com.capstone.sandwich.Domain.Exception.ApiException;
 import com.capstone.sandwich.Service.CarService;
 import com.capstone.sandwich.aws.s3.service.S3Service;
+import com.capstone.sandwich.utils.FileConvertUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import com.capstone.sandwich.Domain.Entity.Car;
 
 import org.springframework.http.HttpStatus;
@@ -39,13 +42,25 @@ public class ApiController {
         //validation
         carService.validateDTO(requestDTO);
 
-        //request to Ai - input requestDTO
+        List<FileSystemResource> convertedFileList = FileConvertUtil.convertMultipartFiles(requestDTO.getImageList());
 
-        //response from Ai - output AiResponseDTO
+        AiRequestDto aiRequestDto = AiRequestDto.builder()
+                .carNumber(requestDTO.getCarNumber())
+                .images(convertedFileList)
+                .build();
+
+        //request to Ai - input requestDTO
         AiResponseDTO aiResponseDTO = carService.requestToAi(requestDTO);
 
+        // Decode images in aiResponseDTO
+//        List<MultipartFile> decodedImages = aiResponseDTO.getImageList().stream()
+//                .map(ImageUtils::convertBase64ToMultipartFile)
+//                .collect(Collectors.toList());
+//
+//        aiResponseDTO.setImageList(decodedImages);
+
         //insert Storage - input AiResponseDTO.getPhotos() output url List
-        List<MultipartFile> imageList = requestDTO.getImageList();
+        List<MultipartFile> imageList = aiResponseDTO.getImageList();
         List<String> imageUrlList = new ArrayList<>();
         for (MultipartFile image : imageList) {
             String imageUrl = s3Service.upload(image);

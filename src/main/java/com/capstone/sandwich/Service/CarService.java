@@ -11,9 +11,13 @@ import com.capstone.sandwich.Repository.CarImagesRepository;
 import com.capstone.sandwich.Repository.CarRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
@@ -30,15 +34,18 @@ public class CarService {
     private final CarRepository carRepository;
     private final CarImagesRepository carImagesRepository;
 
+    @Value("${AI_REQUEST_ENDPOINT}")
+    private static String aiEndpoint;
+
     public Integer validateDTO(RequestDTO dto) throws ApiException {
         log.info("Validation start");
         List<MultipartFile> imageList = dto.getImageList();
         String carNumber = dto.getCarNumber();
 
         //사진 개수 검사
-//        if (imageList.size() == 0) {
-//            throw new ApiException(HttpStatus.NOT_ACCEPTABLE, ApiException.NotAllowed());
-//        }
+        if (imageList.size() != 8) {
+            throw new ApiException(HttpStatus.NOT_ACCEPTABLE, ApiException.NotAllowed());
+        }
 
         //차량 번호 중복 검사
         if (isDuplicate(carNumber)) {
@@ -58,19 +65,48 @@ public class CarService {
         return unsupportedFiles.size();
     }
 
+    /**
+     * request Be -> Ai
+     * AiResponseDto 바로 받음
+     * */
     public AiResponseDTO requestToAi(RequestDTO requestDTO) {
         log.info("request to Ai");
         //TODO HTTPRequest to Ai
 
-        return AiResponseDTO.builder()
-                .carNumber(requestDTO.getCarNumber())
-                .imageList(requestDTO.getImageList())
-                .exterior(0)
-                .gap(0)
-                .installation(0)
-                .scratch(0)
-                .totalDefects(0)
-                .build();
+        // Create RestTemplate
+        RestTemplate restTemplate = new RestTemplate();
+
+        // Set headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Set request entity
+        HttpEntity<RequestDTO> requestEntity = new HttpEntity<>(requestDTO, headers);
+
+        // Send request and get response
+        ResponseEntity<AiResponseDTO> responseEntity = restTemplate.postForEntity(aiEndpoint, requestEntity, AiResponseDTO.class);
+
+        // Get response body
+        AiResponseDTO aiResponseDTO = responseEntity.getBody();
+
+        System.out.println(">> >> " + aiResponseDTO.getCarNumber());
+        System.out.println(">> >> " + aiResponseDTO.getImageList());
+        System.out.println(">> >> " + aiResponseDTO.getTotalDefects());
+
+//        WebClient webClient = WebClient.create();
+//
+//        AiResponseDTO aiResponseDTO = webClient.post()
+//                .uri(aiEndpoint)
+//                .body(BodyInserters.fromValue(requestDTO))
+//                .retrieve()
+//                .bodyToMono(AiResponseDTO.class)
+//                .block();
+//
+//        System.out.println(">> >> " + aiResponseDTO.getCarNumber());
+//        System.out.println(">> >> " + aiResponseDTO.getImageList());
+//        System.out.println(">> >> " + aiResponseDTO.getTotalDefects());
+
+        return aiResponseDTO;
     }
 
     public void insertDB(AiResponseDTO aiResponseDTO, List<String> imageUrlList) {
