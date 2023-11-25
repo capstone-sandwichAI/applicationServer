@@ -36,7 +36,9 @@ public class AiResponseDTO {
         this.totalDefects = totalDefects;
     }
 
-    public void setImageList(List<String> base64Images){//TODO 이미지 이름 정하는거 어케할지
+    public void setImageList(){//TODO 이미지 이름 정하는거 어케할지
+
+        List<String> base64Images = encodedImages;
         List<MultipartFile> decodedImages = new ArrayList<>();
         // Base64 디코딩
         for (int i=0;i<base64Images.size();i++) {

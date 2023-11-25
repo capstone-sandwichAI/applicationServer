@@ -58,6 +58,7 @@ public class CustomMultipartFile implements MultipartFile {
     }
 
     @Override
+    //TODO s3서비스에서 잘 작동?
     public InputStream getInputStream() throws IOException {
         return new ByteArrayInputStream(bytes);
     }
