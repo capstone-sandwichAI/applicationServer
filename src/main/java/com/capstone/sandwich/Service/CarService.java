@@ -9,11 +9,20 @@ import com.capstone.sandwich.Domain.Entity.CarImages;
 import com.capstone.sandwich.Domain.Exception.ApiException;
 import com.capstone.sandwich.Repository.CarImagesRepository;
 import com.capstone.sandwich.Repository.CarRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
@@ -29,6 +38,9 @@ public class CarService {
 
     private final CarRepository carRepository;
     private final CarImagesRepository carImagesRepository;
+
+    @Value("${AI_REQUEST_ENDPOINT}")
+    private String ENDPOINT;
 
     public Integer validateDTO(RequestDTO dto) throws ApiException {
         log.info("Validation start");
@@ -60,16 +72,48 @@ public class CarService {
 
     public AiResponseDTO requestToAi(RequestDTO requestDTO) {
         log.info("request to Ai");
-        //TODO HTTPRequest to Ai
+        AiResponseDTO response = getRespose(requestDTO);
+        log.info("result scratch : {}, gap: {}, installation = {}, exterior = {}",response.getScratch(),response.getGap(),response.getInstallation(),response.getExterior());
+        log.info("images = {}",response.getEncodedImages().size());
+        return response;
+    }
 
-        return AiResponseDTO.builder()
-                .carNumber(requestDTO.getCarNumber())
-                .imageList(requestDTO.getImageList())
-                .exterior(0)
-                .gap(0)
-                .installation(0)
-                .scratch(0)
-                .totalDefects(0)
+    //주 로직
+    private AiResponseDTO getRespose(RequestDTO requestDTO){
+
+        //이 자료형만 멀티파트로 하는데 가능하더라
+        MultiValueMap<String, Object> requestBody = requestDTO.makeRequestForm();
+
+        //request post문 작성
+        AiResponseDTO responseDTO = buildWebClient().post()
+                .uri("/v2/object-detection/best") //추가 url 넣어주고
+                .body(BodyInserters.fromMultipartData(requestBody))//바디 넣는 부분
+                .retrieve()
+                .bodyToMono(AiResponseDTO.class)
+                .block();
+
+        responseDTO.setImageList();
+        responseDTO.setCarNumber(requestDTO.getCarNumber());
+        responseDTO.setTotalDefects();
+
+        //TODO request에 대해서 실패한 경우 AiResponseDTO로 안 오는듯?
+        return responseDTO;
+    }
+
+    //Web client 디폴트로 빌드하는 부분
+    private WebClient buildWebClient() {
+
+
+        //사진 크기 상관없게 해주는 역할
+        ExchangeStrategies exchangeStrategies = ExchangeStrategies.builder()
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(-1)) // to unlimited memory size
+                .build();
+
+
+        return WebClient.builder()
+                .exchangeStrategies(exchangeStrategies)
+                .baseUrl(ENDPOINT) //엔드포인트
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)//멀티 파트로 설정
                 .build();
     }
 
@@ -110,6 +154,7 @@ public class CarService {
         return carRepository.findByCarNumber(carNumber)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 차량 번호입니다."));
     }
+
 
     public List<String> getCarImagesUrl(Integer id) {
         Optional<Car> carOptional = carRepository.findById(id);
