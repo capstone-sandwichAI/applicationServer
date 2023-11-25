@@ -8,6 +8,7 @@ import com.capstone.sandwich.aws.s3.service.S3Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -45,12 +46,13 @@ public class ApiController {
         AiResponseDTO aiResponseDTO = carService.requestToAi(requestDTO);
 
         //insert Storage - input AiResponseDTO.getPhotos() output url List
-        List<MultipartFile> imageList = requestDTO.getImageList();
+        List<MultipartFile> imageList = aiResponseDTO.getImageList();
         List<String> imageUrlList = new ArrayList<>();
         for (MultipartFile image : imageList) {
             String imageUrl = s3Service.upload(image);
             imageUrlList.add(imageUrl);
         }
+        log.info("imageURLList = {}", imageUrlList);
 
         //insert DB - input AiResponseDTO
         carService.insertDB(aiResponseDTO, imageUrlList);
@@ -68,6 +70,7 @@ public class ApiController {
         return ResponseEntity.status(HttpStatus.OK).body("connection between fe and be is successful");
     }
 
+    @Transactional
     @GetMapping("/inspection/result/{carNumber}")
     public ResponseEntity<?> dummyDataApi(@PathVariable("carNumber") String carNumber) {
 
