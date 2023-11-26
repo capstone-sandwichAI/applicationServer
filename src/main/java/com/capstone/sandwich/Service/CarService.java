@@ -72,14 +72,14 @@ public class CarService {
 
     public AiResponseDTO requestToAi(RequestDTO requestDTO) {
         log.info("request to Ai");
-        AiResponseDTO response = getRespose(requestDTO);
+        AiResponseDTO response = getResponse(requestDTO);
         log.info("result scratch : {}, gap: {}, installation = {}, exterior = {}",response.getScratch(),response.getGap(),response.getInstallation(),response.getExterior());
         log.info("images = {}",response.getEncodedImages().size());
         return response;
     }
 
     //주 로직
-    private AiResponseDTO getRespose(RequestDTO requestDTO){
+    private AiResponseDTO getResponse(RequestDTO requestDTO){
 
         //이 자료형만 멀티파트로 하는데 가능하더라
         MultiValueMap<String, Object> requestBody = requestDTO.makeRequestForm();
