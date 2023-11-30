@@ -26,6 +26,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -126,7 +127,7 @@ public class CarService {
                 .gap(aiResponseDTO.getGap())
                 .scratch(aiResponseDTO.getScratch())
                 .totalDefects(aiResponseDTO.getTotalDefects())
-                .createdDate(LocalDate.now())
+                .createdDate(LocalDate.now(ZoneId.of("Asia/Seoul")))
                 .build();
 
         //url list 기반으로 CarImages 객체 리스트
