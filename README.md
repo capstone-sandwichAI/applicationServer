@@ -40,6 +40,7 @@
 
 ## 이렇게 개발했어요
 - backend server, AI server 각각 배포
+  - 각 ec2 인스턴스에 서버를 올려 docker를 활용해 백엔드는 spring과 mariadb, AI는 flask를 실행시킴
 - RESTful API
 - 
 
