@@ -20,7 +20,22 @@
 <br>
 
 ## 이렇게 프로젝트를 진행했어요
-개발과 동시에 
+개발과 동시에 아이템 제안과 보고서 등 문서 작업 병행
+- 아이템 제안
+  - [제안서](https://github.com/capstone-sandwichAI/applicationServer/blob/main/src/main/resources/4%EC%A3%BC%EC%B0%A8_%EC%A0%9C%EC%95%88%EC%84%9C.pdf)
+
+- 차량 불량 검수 use case 설명
+  - [use case 명세서](https://github.com/capstone-sandwichAI/applicationServer/blob/main/src/main/resources/6%EC%A3%BC%EC%B0%A8_%EC%9C%A0%EC%8A%A4%EC%BC%80%EC%9D%B4%EC%8A%A4_%EB%8B%A4%EC%9D%B4%EC%96%B4%EA%B7%B8%EB%9E%A8.pdf)
+  - [use case 발표 자료](https://github.com/capstone-sandwichAI/applicationServer/blob/main/src/main/resources/6%EC%A3%BC%EC%B0%A8_%EC%9C%A0%EC%8A%A4%EC%BC%80%EC%9D%B4%EC%8A%A4_%EB%B0%9C%ED%91%9C%EC%9E%90%EB%A3%8C.pdf)
+
+- 중간 보고
+  - [중간 보고서](https://github.com/capstone-sandwichAI/applicationServer/blob/main/src/main/resources/9%EC%A3%BC%EC%B0%A8_%EC%A4%91%EA%B0%84_%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf)
+
+- 최종 보고
+  - [최종 보고서](https://github.com/capstone-sandwichAI/applicationServer/blob/main/src/main/resources/14%EC%A3%BC%EC%B0%A8_%EC%B5%9C%EC%A2%85_%EB%B3%B4%EA%B3%A0%EC%84%9C.pdf)
+
+- 창의설계 경진대회
+  - [대회 발표 자료](https://github.com/capstone-sandwichAI/applicationServer/blob/main/src/main/resources/13%EC%A3%BC%EC%B0%A8_%EC%B0%BD%EC%9D%98%EC%84%A4%EA%B3%84_%EA%B2%BD%EC%A7%84%EB%8C%80%ED%9A%8C.pdf)
 <br>
 
 ## 이렇게 개발했어요
