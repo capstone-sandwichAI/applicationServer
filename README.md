@@ -19,7 +19,7 @@
 
 <br>
 
-## 이렇게 프로젝트를 진행했어요
+## 프로젝트 진행
 개발과 동시에 아이템 제안과 보고서 등 문서 작업 병행
 - 아이템 제안
   - [제안서](https://github.com/capstone-sandwichAI/applicationServer/blob/main/src/main/resources/4%EC%A3%BC%EC%B0%A8_%EC%A0%9C%EC%95%88%EC%84%9C.pdf)
@@ -38,7 +38,7 @@
   - [대회 발표 자료](https://github.com/capstone-sandwichAI/applicationServer/blob/main/src/main/resources/13%EC%A3%BC%EC%B0%A8_%EC%B0%BD%EC%9D%98%EC%84%A4%EA%B3%84_%EA%B2%BD%EC%A7%84%EB%8C%80%ED%9A%8C.pdf)
 <br>
 
-## 이렇게 개발했어요
+## 개발 진행
 - backend server, AI server 각각 배포
   - 각 ec2 인스턴스에 서버를 올려 docker를 활용해 백엔드는 spring과 mariadb, AI는 flask를 실행시켰다.
   - 클라이언트의 요청에 대해 백엔드는 AI 서버에 요청을 한다. 이 때 사용되는 2번의 request dto를 같게 하여 코드 재사용을 고려했다.
@@ -58,6 +58,7 @@
   - controller, service, repository 계층을 분리해 각 계층이 단일한 책임을 갖도록 구조화했다.
   - entity와 dto 계층을 나눠 데이터 무결성을 강화했고 클라이언트와의 통신에서 효율적인 데이터 전송을 생각했다.
 
+<br>
 
 ## Screen shots
 |메인 화면|
