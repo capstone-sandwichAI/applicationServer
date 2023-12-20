@@ -40,9 +40,23 @@
 
 ## 이렇게 개발했어요
 - backend server, AI server 각각 배포
-  - 각 ec2 인스턴스에 서버를 올려 docker를 활용해 백엔드는 spring과 mariadb, AI는 flask를 실행시킴
-- RESTful API
-- 
+  - 각 ec2 인스턴스에 서버를 올려 docker를 활용해 백엔드는 spring과 mariadb, AI는 flask를 실행시켰다.
+  - 클라이언트의 요청에 대해 백엔드는 AI 서버에 요청을 한다. 이 때 사용되는 2번의 request dto를 같게 하여 코드 재사용을 고려했다.
+ 
+    <br>
+- 검수 시간 소요 개선 고민
+  - 첫째, 영상을 input으로 한 검수 플랫폼을 계획했으나, 전송 테스트 과정에서 시간이 많이 걸리는 문제를 발견했다.
+  - 둘째, AI에서 영상을 프레임 단위로 쪼개고 각 프레임별 output을 이어 붙여 벡엔드에 전송해야 하므로 작업의 간결함이 필요했다.
+  - 셋째, 영상보다 이미지가 고화질이다.
+  - 위와 같은 이유로 영상을 이미지로 대체하였고 플랫폼이 실제 사용될 제조 공장의 환경에도 이미지로 하지 않을 이유가 없었다.
+  - db 적재 시점을 검수 이후로 하여 처음 들어온 요청 이미지들에 대해서는 db와 묶이지 않고 AI 서버로 검수 요청만 하도록 했다.
+  - ![image](https://github.com/capstone-sandwichAI/applicationServer/assets/96655921/6159b371-da00-479d-b70d-b8782680b246)
+  - 15MB 정도의 자동차 외관 영상(좌)과 테스트 이미지 8장(우)을 통신하였을 때,영상은 205ms, 사진은 29ms가 나왔다.
+ 
+    <br>
+- MVC 패턴 개발
+  - controller, service, repository 계층을 분리해 각 계층이 단일한 책임을 갖도록 구조화했다.
+  - entity와 dto 계층을 나눠 데이터 무결성을 강화했고 클라이언트와의 통신에서 효율적인 데이터 전송을 생각했다.
 
 
 ## Screen shots
@@ -65,8 +79,8 @@
 <table>
   <tbody>
     <tr>
-      <td align="center"><a href=""><img src="width="100px;" alt=""/><br /><sub><b>BE : 김정민</b></sub></a><br /></td>
-      <td align="center"><a href=""><img src="" width="100px;" alt=""/><br /><sub><b>BE : 신민기</b></sub></a><br /></td>
+      <td align="center"><a href="https://github.com/justinkim12"><img src=""width="200px;" alt=""/><br /><sub><b>BE : 김정민</b></sub></a><br /></td>
+      <td align="center"><a href="https://github.com/ABCganada"><img src="" width="200px;" alt=""/><br /><sub><b>BE : 신민기</b></sub></a><br /></td>
      <tr/>
   </tbody>
 </table>
